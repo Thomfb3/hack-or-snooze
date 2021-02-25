@@ -1,0 +1,99 @@
+/* Lists of stories */
+
+.stories-list {
+  margin: 20px 5px;
+}
+
+.stories-list > li {
+  color: gray;
+  font-size: 0.8rem;
+  margin: 10px 0;
+  border-bottom: 1px solid lightgray;
+  padding-bottom: 10px;
+}
+
+#stories-loading-msg {
+  font-weight: bold;
+  font-size: 150%;
+  margin: 20px 30px;
+}
+
+
+
+/* Individual stories */
+
+.story-link {
+  color: black;
+  font-size: 0.85rem;
+  font-weight: normal;
+  margin: 18px 0;
+}
+
+.story-link:hover {
+  text-decoration: none;
+}
+
+.story-author {
+  margin-left: 2em;
+}
+
+
+.story-user  {
+  display: block;
+}
+
+.story-delete {
+  color: tomato;
+  margin-left: 2em;
+}
+
+.story-delete:hover {
+  cursor: pointer;
+  color: red;
+}
+
+.story-delete .fas {
+  color: tomato;
+}
+
+.story-delete:hover .fas {
+  color: red;
+}
+
+.fas {
+  color: #ff6600;
+}
+
+.fas:hover {
+  color: red;
+  cursor: pointer;
+}
+ 
+
+.far:hover {
+   color: #ff6600;
+   cursor: pointer;
+}
+
+.story-mine {
+  color: #ff9900;
+  margin-left: 2em;
+}
+
+.story-mine:hover {
+  color: #ff6600;
+  cursor: pointer;
+}
+
+.story-mine:hover .fa-pencil-alt {
+  color: #ff6600;
+  cursor: pointer;
+}
+
+.fa-pencil-alt{
+  color: #ff9900;;
+  cursor: text;
+}
+
+
+
