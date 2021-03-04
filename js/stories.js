@@ -21,44 +21,48 @@ async function getAndShowStoriesOnStart() {
 function generateStoryMarkup(story) {
   console.debug("generateStoryMarkup");
 
-  // Determine if story is in ownStories
-  const isOwnStory = currentUser ? currentUser.isOwnStory(story) : undefined;
-  // If user is logged in then show favorite stars
-  const showStar = currentUser ? getFavoriteIcon(story, currentUser) : "";
-  // If user is logged and it's user's own story then show delete btn and my story flag
-  const myStoryDeleteBtn = currentUser && isOwnStory ? getEditAndDeleteBtn() : "";
-  //get host name
-  const hostName = story.getHostName();
-
   //return markup
   return $(`
     <li id="${story.storyId}">
-      ${showStar}
+      ${getFavoriteIcon(story)}
       <a href="${story.url}" target="a_blank" class="story-link">
       ${story.title}
       </a>
-      <small class="story-hostname">(${hostName})</small>
+      <small class="story-hostname">(${story.getHostName()})</small>
       <small class="story-author">by ${story.author}</small>
-      ${myStoryDeleteBtn}
+      ${getEditAndDeleteBtn(story)}
       <small class="story-user">posted by ${story.username}</small>
     </li>
-    `);
+  `);
 }
+
 
 //creates the markup for the edit and delete button
-function getEditAndDeleteBtn() {
-  return `
-  <small class="story-mine edit-story">edit my story <i class="fas fa-pencil-alt"></i></small>
-  <small class="story-delete">delete my story <i class="delete fas fa-trash-alt"></i></small>`;
+function getEditAndDeleteBtn(story) {
+  // Determine if story is in ownStories, if so return edit and delete buttons
+  if (currentUser && currentUser.isOwnStory(story)) {
+    return `
+      <small class="story-mine edit-story">edit my story <i class="fas fa-pencil-alt"></i></small>
+      <small class="story-delete">delete my story <i class="delete fas fa-trash-alt"></i></small>
+    `;
+  } else {
+    return "";
+  }
 }
+
 
 //creates the markup for the favorite icon
-function getFavoriteIcon(story, user) {
-  const isFavorite = user.isFavorite(story) ? "fas" : "far";
-  return `
-  <i data-story-id="${story.storyId}" class="favorite ${isFavorite} fa-star"></i>`;
+function getFavoriteIcon(story) {
+  //if user is logged in, determine if story is favorite
+  if (currentUser) {
+    const isFavorite = currentUser.isFavorite(story) ? "fas" : "far";
+    return `
+      <i data-story-id="${story.storyId}" class="favorite ${isFavorite} fa-star"></i>
+    `;
+  } else {
+    return "";
+  }
 }
-
 
 
 /** Gets list of stories from server, generates their HTML, and puts on page. */
@@ -81,6 +85,10 @@ function putMyStoriesOnPage() {
   console.debug("putMyStoriesOnPage");
   //Clear stories list
   $allStoriesList.empty();
+
+  if (currentUser.ownStories.length < 1) {
+    $allStoriesList.text("No Stories of your own yet.");
+  }
   // loop through all of our stories and generate HTML for them
   for (let story of currentUser.ownStories) {
     //create markup for each story
@@ -98,6 +106,10 @@ function putFavoritesOnPage() {
   console.debug("putFavoritesOnPage");
   //Clear stories list
   $allStoriesList.empty();
+
+  if (currentUser.favorites.length < 1) {
+    $allStoriesList.text("No Favorites yet.");
+  }
   // loop through all of our stories and generate HTML for them
   for (let story of currentUser.favorites) {
     //create markup for each story
@@ -183,7 +195,7 @@ async function submitEditStory(evt) {
 
   //reset ui
   //Hide edit form;
-  $editStoryForm.show();
+  $editStoryForm.hide();
   //Show stories again, the updated story moves to the top of the list
   putStoriesOnPage();
 }

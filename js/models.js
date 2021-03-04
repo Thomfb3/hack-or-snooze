@@ -25,7 +25,7 @@ class Story {
 
   getHostName() {
     // UNIMPLEMENTED: complete this function!
-    return "hostname.com";
+    return new URL(this.url).hostname;
   }
 }
 
@@ -93,17 +93,9 @@ class StoryList {
 
 
   async editStory(user, story, { title, author, url }) {
-    // collect the story id
+    // // collect the story id
     const storyId = story.storyId;
-    //remove the story from story list
-    this.stories = this.stories.filter(story => story.storyId !== storyId);
-    //remove the story form user's own stories
-    user.ownStories = user.ownStories.filter(story => story.storyId !== storyId);
-    //If it's a favorite remove the story from the user's favorites
-    const isAFavoriteStory = Boolean(user.isFavorite(story));
-    if (isAFavoriteStory) {
-      user.favorites = user.favorites.filter(story => story.storyId !== storyId);
-    }
+
     //Make api call for Patching a story
     const token = user.loginToken;
     const response = await axios({
@@ -112,14 +104,16 @@ class StoryList {
       data: { token: token, story: { title, author, url } }
     });
     //save the response 
-    const editedStory = new Story(response.data.story);
-    //Add the new instance to the story list, own stories, and favorites(if isFavoriteStory is true)
-    this.stories.unshift(editedStory);
-    user.ownStories.unshift(editedStory);
-    if (isAFavoriteStory) {
-      user.favorites.unshift(editedStory);
-    }
+    const updatedStory = new Story(response.data.story);
 
+    //Update that story in story list with returned data
+    this.stories.forEach((story, index) => {
+      if (story.storyId === storyId) {
+        this.stories[index].title = updatedStory.title;
+        this.stories[index].author = updatedStory.author;
+        this.stories[index].url = updatedStory.url;
+      }
+    })
   }
 
 
@@ -185,6 +179,9 @@ class User {
         method: "POST",
         data: { user: { username, password, name } },
       });
+
+      //ADDED TO CORRECT BUG -- REFERENCE ERROR
+      let { user } = response.data;
 
       return new User(
         {
@@ -288,7 +285,4 @@ class User {
   isOwnStory(story) {
     return this.ownStories.some(s => s.storyId === story.storyId);
   }
-
-
-
 }

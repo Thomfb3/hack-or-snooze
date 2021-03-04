@@ -5,7 +5,7 @@
 /* General typography */
 body {
   font-family: Arimo, sans-serif;
-  margin: 8px 7.5vw;
+  margin: 0;
 }
 
 h1 {
@@ -36,10 +36,9 @@ a:hover {
 /* Site layout */
 
 /* This is the basic box that the main part of the page goes into */
-.container {
-  display: flex;
-  flex-direction: column;
-  align-self: center;
+.main-container {
+  padding: 20px 50px;
+  height: 100%;
   background-color: #f6f6ef;
 }
 
@@ -112,15 +111,14 @@ form > hr {
 
 /* responsive queries for tightening things up for mobile. */
 
-@media screen and (max-width: 576px) {
+/* @media screen and (max-width: 576px) {
   body {
-    margin: 0;
+    
   }
 }
 
 @media screen and (min-width: 992px) {
   body {
-    max-width: 900px;
-    margin: 8px auto;
+   
   }
-}
+} */
